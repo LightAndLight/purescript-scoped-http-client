@@ -1,0 +1,5 @@
+{
+    "dependencies": {
+        "scoped-http-client": "^0.11.0"
+    }
+}
