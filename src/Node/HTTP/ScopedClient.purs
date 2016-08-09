@@ -3,7 +3,7 @@ module Node.HTTP.ScopedClient where
 import Prelude (($), Unit)
 import Control.Monad.Aff (Aff, makeAff)
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
+import Control.Monad.Eff.Exception (EXCEPTION, Error)
 import Data.Tuple (Tuple(..))
 import Node.HTTP (HTTP)
 import Node.HTTP.Client (Response)

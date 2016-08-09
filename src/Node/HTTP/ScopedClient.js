@@ -15,7 +15,7 @@ exports.getInternal = function(tuple) {
                 return function() {
                     client.get()(function(err2, success2, body) {
                         if (err2 === null) {
-                            success(tuple(success2,body))();
+                            success(tuple(success2,body)())();
                         } else {
                             err(err2)();
                         }
