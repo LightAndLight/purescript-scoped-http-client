@@ -8,14 +8,71 @@ exports.create = function(url) {
     };
 };
 
-exports.getInternal = function(tuple) {
-    return function(client) {
+exports.scope = function(client) {
+    return function(path) {
+        return function(cb) {
+            return function() {
+                client.scope(path, function(cli) {
+                    cb(cli)();
+                });
+            };
+        };
+    };
+};
+
+exports.getInternal = function(client) {
+    return function(err) {
+        return function(success) {
+            return function() {
+                client.get()(function(err2, success2, body) {
+                    if (err2 === null) {
+                        var rec = {
+                            response: success2,
+                            body: body
+                        };
+                        success(rec)();
+                    } else {
+                        err(err2)();
+                    }
+                });
+            };
+        };
+    };
+};
+
+exports.delInternal = function(client) {
+    return function(err) {
+        return function(success) {
+            return function() {
+                client.del()(function(err2, success2, body) {
+                    if (err2 === null) {
+                        var rec = {
+                            response: success2,
+                            body: body
+                        };
+                        success(rec)();
+                    } else {
+                        err(err2)();
+                    }
+                });
+            };
+        };
+    };
+};
+
+exports.postInternal = function(client) {
+    return function(data) {
         return function(err) {
             return function(success) {
                 return function() {
-                    client.get()(function(err2, success2, body) {
+                    client.post(data)(function(err2, success2, body) {
+
                         if (err2 === null) {
-                            success(tuple(success2,body)())();
+                            var rec = {
+                                response: success2,
+                                body: body
+                            };
+                            success(rec)();
                         } else {
                             err(err2)();
                         }
