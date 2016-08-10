@@ -17,6 +17,8 @@ foreign import create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
 foreign import scope :: forall e. ScopedClient -> String -> (ScopedClient -> Eff e Unit) -> Eff e Unit
 
+foreign import setPath :: forall e. ScopedClient -> String -> Eff (http :: HTTP | e) Unit
+
 foreign import getInternal :: forall e. ScopedClient -> (Error -> Eff e Unit) -> (RequestResult -> Eff e Unit) -> Eff e Unit
 
 get :: forall e. ScopedClient -> Aff (http :: HTTP | e) RequestResult

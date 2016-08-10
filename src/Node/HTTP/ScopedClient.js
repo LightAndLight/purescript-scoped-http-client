@@ -20,6 +20,14 @@ exports.scope = function(client) {
     };
 };
 
+exports.setPath = function(client) {
+    return function(url) {
+        return function() {
+            client.path(path);
+        };
+    };
+};
+
 exports.getInternal = function(client) {
     return function(err) {
         return function(success) {

@@ -15,26 +15,30 @@ import Node.HTTP.Client
 doGet :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
 doGet client = do
     result <- get client
-    liftEff $ log result.body
-    liftEff <<< logShow $ statusCode result.response
+    if statusCode result.response == 200
+        then liftEff $ log "get success"
+        else throwError $ error "get failed"
 
 doPost :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
 doPost client = do
     result <- post client "Hello"
-    liftEff $ log result.body
-    liftEff <<< logShow $ statusCode result.response
+    if statusCode result.response == 200
+        then liftEff $ log "post success"
+        else throwError $ error "post failed"
 
 doDel :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
 doDel client = do
     result <- del client
-    liftEff $ log result.body
-    liftEff <<< logShow $ statusCode result.response
+    if statusCode result.response == 200
+        then liftEff $ log "del success"
+        else throwError $ error "del failed"
 
 doPut :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
 doPut client = do
     result <- put client "Hello"
-    liftEff $ log result.body
-    liftEff <<< logShow $ statusCode result.response
+    if statusCode result.response == 200
+        then liftEff $ log "put success"
+        else throwError $ error "put failed"
 
 main :: Eff (err :: EXCEPTION, http :: HTTP, console :: CONSOLE) Unit
 main = do
@@ -55,3 +59,7 @@ main = do
     scope client "delete" $ \cli -> do
         launchAff $ doDel cli
         pure unit
+    log "Testing setPath"
+    setPath client "http://example.com"
+    launchAff $ doGet client
+    pure unit
