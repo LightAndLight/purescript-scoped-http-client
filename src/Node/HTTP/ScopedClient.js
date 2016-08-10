@@ -82,3 +82,26 @@ exports.postInternal = function(client) {
         };
     };
 };
+
+exports.putInternal = function(client) {
+    return function(data) {
+        return function(err) {
+            return function(success) {
+                return function() {
+                    client.put(data)(function(err2, success2, body) {
+
+                        if (err2 === null) {
+                            var rec = {
+                                response: success2,
+                                body: body
+                            };
+                            success(rec)();
+                        } else {
+                            err(err2)();
+                        }
+                    });
+                };
+            };
+        };
+    };
+};

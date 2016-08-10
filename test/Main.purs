@@ -24,6 +24,18 @@ doPost client = do
     liftEff $ log result.body
     liftEff <<< logShow $ statusCode result.response
 
+doDel :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
+doDel client = do
+    result <- del client
+    liftEff $ log result.body
+    liftEff <<< logShow $ statusCode result.response
+
+doPut :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
+doPut client = do
+    result <- put client "Hello"
+    liftEff $ log result.body
+    liftEff <<< logShow $ statusCode result.response
+
 main :: Eff (err :: EXCEPTION, http :: HTTP, console :: CONSOLE) Unit
 main = do
     client <- create "http://httpbin.org"
@@ -34,4 +46,12 @@ main = do
     log "Testing post request"
     scope client "post" $ \cli -> do
         launchAff $ doPost cli
+        pure unit
+    log "Testing put request"
+    scope client "put" $ \cli -> do
+        launchAff $ doPut cli
+        pure unit
+    log "Testing del request"
+    scope client "delete" $ \cli -> do
+        launchAff $ doDel cli
         pure unit

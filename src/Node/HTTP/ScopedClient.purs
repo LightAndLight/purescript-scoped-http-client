@@ -31,3 +31,8 @@ foreign import postInternal :: forall e. ScopedClient -> String -> (Error -> Eff
 
 post :: forall e. ScopedClient -> String -> Aff (http :: HTTP | e) RequestResult
 post client body = makeAff $ postInternal client body
+
+foreign import putInternal :: forall e. ScopedClient -> String -> (Error -> Eff e Unit) -> (RequestResult -> Eff e Unit) -> Eff e Unit
+
+put :: forall e. ScopedClient -> String -> Aff (http :: HTTP | e) RequestResult
+put client body = makeAff $ putInternal client body
