@@ -12,7 +12,7 @@ type RequestResult = { response :: Response, body :: String }
 foreign import data ScopedClient :: *
 
 
-foreign import create :: forall e. String -> Eff e ScopedClient
+foreign import create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
 foreign import scope :: forall e. ScopedClient -> String -> (ScopedClient -> Eff e Unit) -> Eff e Unit
 
