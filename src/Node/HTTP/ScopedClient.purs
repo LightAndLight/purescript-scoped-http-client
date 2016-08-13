@@ -1,5 +1,6 @@
 module Node.HTTP.ScopedClient (
-    create
+    ScopedClient
+    , create
     , scope
     , setPath
     , get
