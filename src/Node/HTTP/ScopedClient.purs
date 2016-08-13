@@ -1,4 +1,12 @@
-module Node.HTTP.ScopedClient where
+module Node.HTTP.ScopedClient (
+    create
+    , scope
+    , setPath
+    , get
+    , del
+    , put
+    , post
+) where
 
 import Prelude (($), Unit)
 import Control.Monad.Aff (Aff, makeAff)
