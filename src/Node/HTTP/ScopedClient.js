@@ -29,58 +29,13 @@ exports.setPath = function(client) {
 };
 
 exports.getInternal = function(client) {
-    return function(err) {
-        return function(success) {
-            return function() {
-                client.get()(function(err2, success2, body) {
-                    if (err2 === null) {
-                        var rec = {
-                            response: success2,
-                            body: body
-                        };
-                        success(rec)();
-                    } else {
-                        err(err2)();
-                    }
-                });
-            };
-        };
-    };
-};
-
-exports.delInternal = function(client) {
-    return function(err) {
-        return function(success) {
-            return function() {
-                client.del()(function(err2, success2, body) {
-                    if (err2 === null) {
-                        var rec = {
-                            response: success2,
-                            body: body
-                        };
-                        success(rec)();
-                    } else {
-                        err(err2)();
-                    }
-                });
-            };
-        };
-    };
-};
-
-exports.postInternal = function(client) {
-    return function(data) {
+    return function(mkresult) {
         return function(err) {
             return function(success) {
                 return function() {
-                    client.post(data)(function(err2, success2, body) {
-
+                    client.get()(function(err2, success2, body) {
                         if (err2 === null) {
-                            var rec = {
-                                response: success2,
-                                body: body
-                            };
-                            success(rec)();
+                            success(mkresult(success2,body))();
                         } else {
                             err(err2)();
                         }
@@ -91,23 +46,58 @@ exports.postInternal = function(client) {
     };
 };
 
-exports.putInternal = function(client) {
-    return function(data) {
+exports.delInternal = function(client) {
+    return function(mkresult) {
         return function(err) {
             return function(success) {
                 return function() {
-                    client.put(data)(function(err2, success2, body) {
-
+                    client.del()(function(err2, success2, body) {
                         if (err2 === null) {
-                            var rec = {
-                                response: success2,
-                                body: body
-                            };
-                            success(rec)();
+                            success(mkresult(success2, body))();
                         } else {
                             err(err2)();
                         }
                     });
+                };
+            };
+        };
+    };
+};
+
+exports.postInternal = function(client) {
+    return function(data) {
+        return function(mkresult) {
+            return function(err) {
+                return function(success) {
+                    return function() {
+                        client.post(data)(function(err2, success2, body) {
+                            if (err2 === null) {
+                                success(mkresult(success2, body)();
+                            } else {
+                                err(err2)();
+                            }
+                        });
+                    };
+                };
+            };
+        };
+    };
+};
+
+exports.putInternal = function(client) {
+    return function(data) {
+        return function(mkresult) {
+            return function(err) {
+                return function(success) {
+                    return function() {
+                        client.put(data)(function(err2, success2, body) {
+                            if (err2 === null) {
+                                success(mkresult(success2, body)();
+                            } else {
+                                err(err2)();
+                            }
+                        });
+                    };
                 };
             };
         };
