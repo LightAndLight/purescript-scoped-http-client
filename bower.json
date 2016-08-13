@@ -1,17 +1,26 @@
 {
-  "name": "purescript-scoped-http-client",
-  "ignore": [
-    "**/.*",
-    "node_modules",
-    "bower_components",
-    "output"
-  ],
-  "dependencies": {
-    "purescript-console": "^1.0.0",
-    "purescript-aff": "^1.1.0",
-    "purescript-node-http": "^1.0.0"
-  },
-  "devDependencies": {
-    "purescript-psci-support": "^1.0.0"
-  }
+    "name": "purescript-scoped-http-client",
+    "description": "Bindings to node-scoped-http-client",
+    "ignore": [
+        "**/.*",
+        "node_modules",
+        "bower_components",
+        "output"
+    ],
+    "dependencies": {
+        "purescript-console": "^1.0.0",
+        "purescript-aff": "^1.1.0",
+        "purescript-node-http": "^1.0.0"
+    },
+    "devDependencies": {
+        "purescript-psci-support": "^1.0.0"
+    },
+    "license": "MIT",
+    "keywords": [
+        "purescript",
+        "node",
+        "scoped",
+        "http",
+        "client"
+    ]
 }
