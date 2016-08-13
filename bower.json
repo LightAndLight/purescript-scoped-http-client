@@ -13,7 +13,8 @@
         "purescript-node-http": "^1.0.0"
     },
     "devDependencies": {
-        "purescript-psci-support": "^1.0.0"
+        "purescript-psci-support": "^1.0.0",
+        "purescript-test-unit": "^9.0.0"
     },
     "license": "MIT",
     "keywords": [

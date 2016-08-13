@@ -1,65 +1,49 @@
 module Test.Main where
 
-import Prelude
+import Prelude (Unit, bind, ($), (==), (<<<), (<>), unit, pure)
 import Control.Monad.Aff (Aff, launchAff)
+import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE, log, logShow)
-import Control.Monad.Eff.Exception (EXCEPTION, error)
-import Control.Monad.Error.Class (throwError)
-import Data.Tuple
+import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Eff.Exception (EXCEPTION)
+import Control.Monad.Eff.Timer (TIMER)
 import Node.HTTP.ScopedClient
 import Node.HTTP (HTTP)
-import Node.HTTP.Client
+import Node.HTTP.Client (statusCode)
+import Test.Unit (suite, test, timeout)
+import Test.Unit.Console (TESTOUTPUT)
+import Test.Unit.Main (runTest)
+import Test.Unit.Assert (assert)
 
-doGet :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
-doGet client = do
-    result <- get client
-    if statusCode result.response == 200
-        then liftEff $ log "get success"
-        else throwError $ error "get failed"
+testURL :: String
+testURL = "http://httpbin.org"
 
-doPost :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
-doPost client = do
-    result <- post client "Hello"
-    if statusCode result.response == 200
-        then liftEff $ log "post success"
-        else throwError $ error "post failed"
+main :: Eff (err :: EXCEPTION, testOutput :: TESTOUTPUT, timer :: TIMER, avar :: AVAR, http :: HTTP, console :: CONSOLE) Unit
+main = runTest do
+    suite "requests" do
+        test "get" $ timeout 3000 do
+            client <- liftEff <<< create $ testURL <> "/get"
+            result <- get client
+            assert "get status code was not 200" $ statusCode result.response == 200
+        test "post" $ timeout 3000 do
+            client <- liftEff <<< create $ testURL <> "/post"
+            result <- post client "Hello"
+            assert "post status code was not 200" $ statusCode result.response == 200
+        test "del" $ timeout 3000 do
+            client <- liftEff <<< create $ testURL <> "/delete"
+            result <- del client
+            assert "del status code was not 200" $ statusCode result.response == 200
+        test "put" $ timeout 3000 do
+            client <- liftEff <<< create $ testURL <> "/put"
+            result <- put client "Hello"
+            assert "put status code was not 200" $ statusCode result.response == 200
 
-doDel :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
-doDel client = do
-    result <- del client
-    if statusCode result.response == 200
-        then liftEff $ log "del success"
-        else throwError $ error "del failed"
+    suite "scope" $ test "get" do
+        client <- liftEff $ create testURL
+        liftEff $ scope client "get" $ \cli -> do
+            launchAff do
+                result <- get cli
+                assert "get status code was not 200" $ statusCode result.response == 200
+            pure unit
 
-doPut :: forall e. ScopedClient -> Aff (console :: CONSOLE, http :: HTTP | e) Unit
-doPut client = do
-    result <- put client "Hello"
-    if statusCode result.response == 200
-        then liftEff $ log "put success"
-        else throwError $ error "put failed"
-
-main :: Eff (err :: EXCEPTION, http :: HTTP, console :: CONSOLE) Unit
-main = do
-    client <- create "http://httpbin.org"
-    log "Testing get request"
-    scope client "get" $ \cli -> do
-        launchAff $ doGet cli
-        pure unit
-    log "Testing post request"
-    scope client "post" $ \cli -> do
-        launchAff $ doPost cli
-        pure unit
-    log "Testing put request"
-    scope client "put" $ \cli -> do
-        launchAff $ doPut cli
-        pure unit
-    log "Testing del request"
-    scope client "delete" $ \cli -> do
-        launchAff $ doDel cli
-        pure unit
-    log "Testing setPath"
-    setPath client "http://example.com"
-    launchAff $ doGet client
-    pure unit
