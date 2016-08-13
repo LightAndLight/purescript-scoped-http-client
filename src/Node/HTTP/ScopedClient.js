@@ -72,7 +72,7 @@ exports.postInternal = function(client) {
                     return function() {
                         client.post(data)(function(err2, success2, body) {
                             if (err2 === null) {
-                                success(mkresult(success2, body)();
+                                success(mkresult(success2, body))();
                             } else {
                                 err(err2)();
                             }
@@ -92,7 +92,7 @@ exports.putInternal = function(client) {
                     return function() {
                         client.put(data)(function(err2, success2, body) {
                             if (err2 === null) {
-                                success(mkresult(success2, body)();
+                                success(mkresult(success2, body))();
                             } else {
                                 err(err2)();
                             }

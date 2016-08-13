@@ -1,5 +1,6 @@
 module Node.HTTP.ScopedClient (
     ScopedClient
+    , Result(..)
     , create
     , scope
     , setPath
@@ -16,34 +17,63 @@ import Control.Monad.Eff.Exception (Error)
 import Node.HTTP (HTTP)
 import Node.HTTP.Client (Response)
 
-newtype Result = Result { response :: Response, body :: String }
-
 foreign import data ScopedClient :: *
 
-
+-- | Create a ScopedClient for a URL
+-- |
+-- | `create "http://example.com"`
 foreign import create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
+-- | Run a operations with a new client that is scoped to a sub-path
+-- |
+-- | ```
+-- | main = do
+-- |      client <- create "http://example.com"
+-- |      scope client "example/endpoint" $ \cli -> do
+-- |          launchAff $ do
+-- |              result <- get cli
+-- |              liftEff $ log result.body
+-- |          pure unit
+-- | ``` 
 foreign import scope :: forall e. ScopedClient -> String -> (ScopedClient -> Eff e Unit) -> Eff e Unit
 
+-- | Changes the URL on which the client operates
 foreign import setPath :: forall e. ScopedClient -> String -> Eff (http :: HTTP | e) Unit
 
 
-foreign import getInternal :: forall e. ScopedClient -> (Response -> String -> Result) -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
+
+
+-- | The result of running a request
+type Result = { response :: Response, body :: String }
+
+
+
+
+foreign import getInternal :: forall e. ScopedClient -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
 
 get :: forall e. ScopedClient -> Aff (http :: HTTP | e) Result
-get client = makeAff $ getInternal client Result
+get client = makeAff $ getInternal client
 
-foreign import delInternal :: forall e. ScopedClient -> (Response -> String -> Result) -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
+
+
+
+foreign import delInternal :: forall e. ScopedClient -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
 
 del :: forall e. ScopedClient -> Aff (http :: HTTP | e) Result
-del client = makeAff $ delInternal client Result
+del client = makeAff $ delInternal client
 
-foreign import postInternal :: forall e. ScopedClient -> String -> (Response -> String -> Result) -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
+
+
+
+foreign import postInternal :: forall e. ScopedClient -> String -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
 
 post :: forall e. ScopedClient -> String -> Aff (http :: HTTP | e) Result
-post client body = makeAff $ postInternal client body Result
+post client body = makeAff $ postInternal client body
 
-foreign import putInternal :: forall e. ScopedClient -> String -> (Response -> String -> Result) -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
+
+
+
+foreign import putInternal :: forall e. ScopedClient -> String -> (Error -> Eff e Unit) -> (Result -> Eff e Unit) -> Eff e Unit
 
 put :: forall e. ScopedClient -> String -> Aff (http :: HTTP | e) Result
-put client body = makeAff $ putInternal client body Result
+put client body = makeAff $ putInternal client body 
