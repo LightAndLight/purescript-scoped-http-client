@@ -20,13 +20,11 @@ import Node.HTTP.Client (Response)
 foreign import data ScopedClient :: *
 
 -- | Create a ScopedClient for a URL
--- |
--- | `create "http://example.com"`
 foreign import create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
 -- | Run operations with a new client that is scoped to a sub-path
 -- |
--- | ```
+-- | ```purescript
 -- | main = do
 -- |      client <- create "http://example.com"
 -- |      scope client "example/endpoint" $ \cli -> do

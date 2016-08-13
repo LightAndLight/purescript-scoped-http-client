@@ -14,8 +14,6 @@ create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
 Create a ScopedClient for a URL
 
-`create "http://example.com"`
-
 #### `scope`
 
 ``` purescript
@@ -24,7 +22,7 @@ scope :: forall e. ScopedClient -> String -> (ScopedClient -> Eff e Unit) -> Eff
 
 Run operations with a new client that is scoped to a sub-path
 
-```
+```purescript
 main = do
      client <- create "http://example.com"
      scope client "example/endpoint" $ \cli -> do
