@@ -24,7 +24,7 @@ foreign import data ScopedClient :: *
 -- | `create "http://example.com"`
 foreign import create :: forall e. String -> Eff (http :: HTTP | e) ScopedClient
 
--- | Run a operations with a new client that is scoped to a sub-path
+-- | Run operations with a new client that is scoped to a sub-path
 -- |
 -- | ```
 -- | main = do
