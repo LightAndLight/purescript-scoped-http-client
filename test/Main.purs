@@ -1,11 +1,11 @@
 module Test.Main where
 
 import Prelude (Unit, bind, ($), (==), (<<<), (<>), unit, pure)
-import Control.Monad.Aff (Aff, launchAff)
+import Control.Monad.Aff (launchAff)
 import Control.Monad.Aff.AVar (AVAR)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Class (liftEff)
-import Control.Monad.Eff.Console (CONSOLE, log)
+import Control.Monad.Eff.Console (CONSOLE)
 import Control.Monad.Eff.Exception (EXCEPTION)
 import Control.Monad.Eff.Timer (TIMER)
 import Node.HTTP.ScopedClient
